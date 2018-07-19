@@ -24,30 +24,32 @@ router.get('/:shortcut', async (req, res) => {
   }
 })
 
-router.use((req, res, next) => {
+router.use(async (req, res, next) => {
   if (req.method !== 'POST') {
     next()
     return
   }
 
-  let password = req.body.password;
+  let password = req.body.password
   const secret = '8da01678031fde4d8a24d06192b674fad47d8e4874938493e7add38b29ac3b29'
   if (password && sha256.x2(password) === secret) {
     next()
+    return
   } else {
     res.status(403);
     res.json({
       success: false,
       message: "You don't have permission to do this."
-    });
+    })
   }
-});
+})
 
 router.post('/new', async (req, res) => {
   let nick = req.body.nick
   let url = req.body.url
 
   if (!nick || !url) {
+    res.status(400)
     res.json({
       success: false,
       message: 'nick and url not provided.'

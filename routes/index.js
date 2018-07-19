@@ -1,5 +1,4 @@
 const sqlite = require('sqlite')
-const express = require('express')
 const sha256 = require('sha256')
 const express = require('express')
 const router = express.Router()
@@ -13,8 +12,24 @@ router.get('/', async (req, res, next) => {
   })
 })
 
+router.get('/:shortcut', async (req, res) => {
+  let shortcut = req.params.shortcut
+
+  try {
+    const db = await dbPromise
+    const result = await db.get('SELECT nick, url FROM shortcuts WHERE nick = ? LIMIT 1', shortcut)
+    res.redirect(result.url)
+  } catch (err) {
+    res.redirect('/')
+  }
+})
 
 router.use((req, res, next) => {
+  if (req.method !== 'POST') {
+    next()
+    return
+  }
+
   let password = req.body.password;
   const secret = '8da01678031fde4d8a24d06192b674fad47d8e4874938493e7add38b29ac3b29'
   if (password && sha256.x2(password) === secret) {
@@ -41,7 +56,7 @@ router.post('/new', async (req, res) => {
 
   try {
     const db = await dbPromise
-    await db.run("INSERT INTO shortcuts VALUES (?, ?)", [nick, url])
+    await db.run('INSERT INTO shortcuts VALUES (?, ?)', [nick, url])
 
     res.json({
       success: true,

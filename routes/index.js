@@ -12,6 +12,12 @@ router.get('/', async (req, res, next) => {
   })
 })
 
+router.get('/edit', async (req, res, next) => {
+  res.render('edit', {
+    title: 'Edit shortcuts'
+  })
+})
+
 router.get('/:shortcut', async (req, res) => {
   let shortcut = req.params.shortcut
 
@@ -71,5 +77,9 @@ router.post('/new', async (req, res) => {
     })
   }
 }) 
+
+router.post('/edit', async (req, res) => {
+
+})
 
 module.exports = router

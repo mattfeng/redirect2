@@ -5,24 +5,21 @@ const router = express.Router()
 
 const dbPromise = sqlite.open('./db/shortcuts.db', { Promise })
 
-/* GET home page. */
-router.get('/', async (req, res, next) => {
-  res.render('index', {
-    title: 'MEET Redirect'
-  })
-})
-
-
-router.get('/:shortcut', async (req, res) => {
-  let shortcut = req.params.shortcut
+router.get('/', async (req, res) => {
+  let currentShortcuts = []
 
   try {
     const db = await dbPromise
-    const result = await db.get('SELECT nick, url FROM shortcuts WHERE nick = ? LIMIT 1', shortcut)
-    res.redirect(result.url)
+    currentShortcuts = await db.all('SELECT nick, url FROM shortcuts ORDER BY nick')
   } catch (err) {
-    res.redirect('/')
+    console.log("Couldn't fetch results from the database.")
   }
+
+  res.render('edit', {
+    title: 'Edit shortcuts',
+    shortcuts: currentShortcuts
+  })
+
 })
 
 router.use(async (req, res, next) => {
@@ -45,33 +42,25 @@ router.use(async (req, res, next) => {
   }
 })
 
-router.post('/new', async (req, res) => {
-  let nick = req.body.nick
+router.post('/', async (req, res) => {
   let url = req.body.url
+  let nick = req.body.nick
 
-  if (!nick || !url) {
-    res.status(400)
-    res.json({
-      success: false,
-      message: 'nick and url not provided.'
-    })
-  }
+  let query = 'UPDATE shortcuts SET url = ? WHERE nick = ?'
 
   try {
     const db = await dbPromise
-    await db.run('INSERT INTO shortcuts VALUES (?, ?)', [nick, url])
-
-    res.json({
-      success: true,
-      message: 'Shortcut added.'
-    })
+    await db.run(query, [url, nick])
   } catch (err) {
     res.json({
       success: false,
-      message: err.message
+      message: "Couldn't update database."
     })
+    res.end()
+    return
   }
-}) 
 
+  res.redirect('/edit')
+})
 
 module.exports = router

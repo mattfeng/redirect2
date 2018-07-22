@@ -1,0 +1,33 @@
+<html>
+
+<head>
+  <% include ../partials/head %>
+    <link rel="stylesheet" href="/css/edit.css">
+</head>
+
+
+<body>
+  <main class="container">
+    <div class="container">
+
+      <h1>
+        Edit Shortcuts
+      </h1>
+
+      <% for (var i = 0; i < shortcuts.length; i++) { %>
+        <div>
+          <form action="/edit" method="POST">
+            <input type="text" value="<%= shortcuts[i].nick %>" name="nick" readonly>
+            <input type="text" value="<%= shortcuts[i].url %>" name="url">
+            <input type="password" placeholder="Password" name="password">
+            <button type="submit">Update</button>
+          </form>
+        </div>
+        <% } %>
+
+    </div>
+    <!-- .container for centering -->
+  </main>
+</body>
+
+</html>

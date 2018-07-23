@@ -25,7 +25,6 @@ a {
     height: 40px;
     margin: 5px 0px;
     border-radius: 4px;
-    color: #777;
     border: 1px solid #ddd;
     padding: 0px 10px;
     outline: none; }
@@ -46,5 +45,13 @@ a {
     border: 1px solid #00B7FF;
     transition: all 0.1s;
     color: #00B7FF; }
+
+.home-link {
+  color: #333;
+  text-decoration: none; }
+
+.home-link:hover {
+  color: #00B7FF;
+  text-decoration: none; }
 
 /*# sourceMappingURL=style.css.map */

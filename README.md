@@ -1,10 +1,5 @@
-# My New Title
-
-
-
-
 # Redirect2
-**A Custom URL Shortener for MEET Y2 Summer 2018**
+**A low dependency, easily deployable URL Shortener.**
 
 ## How to use `go` as a search engine in Google Chrome:
 Note: Recommended to be done on your Google organization account (i.e. `@meet.mit.edu`), and not on your personal Google account.

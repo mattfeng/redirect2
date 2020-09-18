@@ -1,7 +1,8 @@
 const config = require('../config')
 
 const sqlite = require('sqlite')
-const sha512 = require('hash.js/lib/hash/sha/512')
+const Hashes = require('jshashes')
+const sha512 = new Hashes.SHA512()
 const express = require('express')
 const router = express.Router()
 
@@ -31,7 +32,7 @@ router.use(async (req, res, next) => {
   }
 
   let password = req.body.password
-  if (password && sha512.update(password).digest('hex') === config.SECRET_HASH) {
+  if (password && sha512.hex(password) === config.SECRET_HASH) {
     next()
     return
   } else {

@@ -1,7 +1,8 @@
 const config = require('../config')
 
 const sqlite = require('sqlite')
-const sha512 = require('hash.js/lib/hash/sha/512')
+const Hashes = require('jshashes')
+const sha512 = new Hashes.SHA512()
 const express = require('express')
 const router = express.Router()
 
@@ -9,6 +10,13 @@ const dbPromise = sqlite.open(config.DB_PATH, { Promise })
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
+  try {
+    const db = await dbPromise
+    await db.get('CREATE TABLE IF NOT EXISTS shortcuts (nick TEXT NOT NULL PRIMARY KEY, url TEXT NOT NULL);')
+  } catch (err) {
+    console.error(err)
+    console.log('Could not create table')
+  }
   res.render('index', {
     title: 'Redirect2'
   })
@@ -33,7 +41,7 @@ router.use(async (req, res, next) => {
   }
 
   let password = req.body.password
-  if (password && sha512.update(password).digest('hex') === config.SECRET_HASH) {
+  if (password && sha512.hex(password) === config.SECRET_HASH) {
     next()
     return
   } else {

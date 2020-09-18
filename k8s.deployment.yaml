@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redirect2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redirect2
+  template:
+    metadata:
+      name: redirect2
+      labels:
+        app: redirect2
+    spec:
+      containers:
+        - name: main
+          image: mattfeng/redirect2:1.0.1
+          env:
+            - name: PORT
+              value: '8080'
+            - name: SECRET_HASH
+              valueFrom:
+                secretKeyRef:
+                  optional: false
+                  name: redirect2-secrets
+                  key: secret_hash.sha512
+          volumeMounts:
+            - name: database
+              mountPath: /db
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: redirect2-database
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: database
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
+  fstype: ext4
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redirect2-database
+spec:
+  storageClassName: database
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redirect2
+spec:
+  selector:
+    app: redirect2
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

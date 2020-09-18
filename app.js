@@ -7,6 +7,7 @@ var sassMiddleware = require('node-sass-middleware')
 
 var editRouter = require('./routes/edit')
 var indexRouter = require('./routes/index')
+const config = require('./config')
 
 var app = express()
 
@@ -37,7 +38,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  if (req.app.get('env') === 'development') {
+  if (config.DEVELOPMENT) {
     res.locals.message = err.message
     res.locals.error = err
 

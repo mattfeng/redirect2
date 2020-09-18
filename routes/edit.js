@@ -1,9 +1,11 @@
+const config = require('../config')
+
 const sqlite = require('sqlite')
-const sha256 = require('sha256')
+const sha512 = require('hash.js/lib/hash/sha/512')
 const express = require('express')
 const router = express.Router()
 
-const dbPromise = sqlite.open('./db/shortcuts.db', { Promise })
+const dbPromise = sqlite.open(config.DB_PATH, { Promise })
 
 router.get('/', async (req, res) => {
   let currentShortcuts = []
@@ -29,8 +31,7 @@ router.use(async (req, res, next) => {
   }
 
   let password = req.body.password
-  const secret = '8da01678031fde4d8a24d06192b674fad47d8e4874938493e7add38b29ac3b29'
-  if (password && sha256.x2(password) === secret) {
+  if (password && sha512.update(password).digest('hex') === config.SECRET_HASH) {
     next()
     return
   } else {

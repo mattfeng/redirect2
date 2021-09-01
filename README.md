@@ -4,6 +4,27 @@
 ## Docker images
 - `mattfeng/redirect2:1.0.0`
 
+## Deploying with Docker
+
+```
+docker run -d -p 8080:8080 --env SECRET_HASH= mattfeng/redirect2:1.0.0
+```
+
+### Setting up NGINX reverse proxy
+
+```
+# /etc/nginx/sites-available/go.example.com
+server {
+    listen 80;
+
+    server_name go.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+}
+```
+
 ## Configuration
 ### Environment variables
 |variable|default value|allowed values|description|

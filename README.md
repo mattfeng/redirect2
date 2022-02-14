@@ -1,6 +1,12 @@
 # Redirect2
 **A low dependency, easily deployable URL Shortener.**
 
+## Development
+```
+npm install
+nodemon app.js
+```
+
 ## Docker images
 - `mattfeng/redirect2:1.0.0`
 

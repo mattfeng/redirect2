@@ -1,6 +1,8 @@
 # Redirect2
 **A low dependency, easily deployable URL Shortener.**
 
+![The redirect2 interface.](./redirect2.png)
+
 ## Development
 ```
 npm install
